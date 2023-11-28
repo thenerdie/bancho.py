@@ -17,5 +17,5 @@ COPY . .
 
 ENTRYPOINT [ "scripts/start_server.sh" ]
 
-EXPOSE 80/tcp
-EXPOSE 80/udp
+EXPOSE 80
+EXPOSE 443
