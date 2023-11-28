@@ -1814,8 +1814,8 @@ async def register_account(
     check: int = Form(...),
     #
     # TODO: allow nginx to be optional
-    forwarded_ip: str = Header(..., alias="X-Forwarded-For"),
-    real_ip: str = Header(..., alias="X-Real-IP"),
+    # forwarded_ip: str = Header(..., alias="X-Forwarded-For"),
+    # real_ip: str = Header(..., alias="X-Real-IP"),
 ) -> Response:
     if not all((username, email, pw_plaintext)):
         return Response(
@@ -1833,7 +1833,7 @@ async def register_account(
     # - not be in the config's `disallowed_names` list
     # - not already be taken by another player
     if not regexes.USERNAME.match(username):
-        errors["username"].append("Must be 2-15 characters in length.")
+        errors["username"].append("Must be 2-25 characters in length.")
 
     if "_" in username and " " in username:
         errors["username"].append('May contain "_" and " ", but not both.')
