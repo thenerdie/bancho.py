@@ -16,3 +16,6 @@ RUN pip install -r requirements.txt
 COPY . .
 
 ENTRYPOINT [ "scripts/start_server.sh" ]
+
+EXPOSE 80/tcp
+EXPOSE 80/udp
