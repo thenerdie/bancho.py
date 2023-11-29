@@ -18,7 +18,7 @@ COPY . .
 
 FROM caddy:alpine
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash python3
 
 COPY --from=python-build /srv/root /srv/root
 
