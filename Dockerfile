@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 # NOTE: done last to avoid re-run of previous steps
 COPY . .
 
-ENTRYPOINT [ "scripts/start_server.sh" ]
+FROM caddy:alpine
+COPY ./Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 80
-EXPOSE 443
+ENTRYPOINT [ "scripts/start_server.sh" ]
