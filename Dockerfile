@@ -13,17 +13,12 @@ COPY requirements.txt ./
 RUN pip install -U pip setuptools
 RUN pip install -r requirements.txt
 
+RUN apt-get update && apt-get install -y debian-keyring debian-archive-keyring apt-transport-https \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | apt-key add - \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list \
+    && apt-get update && apt-get install -y caddy
+
 # NOTE: done last to avoid re-run of previous steps
 COPY . .
-
-FROM caddy:alpine
-
-RUN apk add --no-cache bash python3
-
-COPY --from=python-build /srv/root /srv/root
-
-COPY ./Caddyfile /etc/caddy/Caddyfile
-
-WORKDIR /srv/root
 
 ENTRYPOINT [ "scripts/start_server.sh" ]
