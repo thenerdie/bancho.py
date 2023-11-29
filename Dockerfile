@@ -1,33 +1,22 @@
-# Python build stage
-FROM python:3.11-slim AS python-build
-
-ENV PYTHONUNBUFFERED=1
+# Caddy stage with Python and required packages
+FROM caddy:alpine
 
 WORKDIR /srv/root
 
-RUN apt update && apt install --no-install-recommends -y \
-    git curl build-essential=12.9 \
-    && rm -rf /var/lib/apt/lists/*
+# Install bash, Python, pip, and other necessary packages
+RUN apk add --no-cache bash python3 py3-pip \
+    && apk add --no-cache git curl build-base
 
+# Copy the Python requirements and install them
 COPY requirements.txt ./
 RUN pip install -U pip setuptools
 RUN pip install -r requirements.txt
 
-# NOTE: done last to avoid re-run of previous steps
+# Copy your application code
 COPY . .
 
-ARG PYTHON_VERSION=3.11
-ENV PYTHON_VERSION=${PYTHON_VERSION}
-
-FROM caddy:alpine
-
-RUN apk add --no-cache bash python3
-
-COPY --from=python-build /srv/root /srv/root
-COPY --from=python-build /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages
-
+# Copy the Caddyfile
 COPY ./Caddyfile /etc/caddy/Caddyfile
 
-WORKDIR /srv/root
-
-ENTRYPOINT [ "scripts/start_server.sh" ]
+# Set the entry point to start the server
+ENTRYPOINT [ "bash", "scripts/start_server.sh" ]
