@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# Python build stage
+FROM python:3.11-slim AS python-build
 
 ENV PYTHONUNBUFFERED=1
 
@@ -16,6 +17,11 @@ RUN pip install -r requirements.txt
 COPY . .
 
 FROM caddy:alpine
+
+COPY --from=python-build /srv/root /srv/root
+
 COPY ./Caddyfile /etc/caddy/Caddyfile
+
+WORKDIR /srv/root
 
 ENTRYPOINT [ "scripts/start_server.sh" ]
