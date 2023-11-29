@@ -18,6 +18,8 @@ COPY . .
 
 FROM caddy:alpine
 
+RUN apk add --no-cache bash
+
 COPY --from=python-build /srv/root /srv/root
 
 COPY ./Caddyfile /etc/caddy/Caddyfile
